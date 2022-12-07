@@ -1,0 +1,102 @@
+
+
+	
+
+.context{
+	padding-left: 450px;
+	padding-top:20px;
+	height:649px;
+	/*background: #9cf;*/
+
+	/*background: #ddbdff;*/
+
+}
+
+.table-container{
+	margin:0;
+	width:100%;
+	height:100%;
+}
+
+.table-title{
+	height:50px;
+	margin-right: 230px;
+	/*background:#bbbec5;*/
+	/*vertical-align: middle;*/
+}
+.table-title p{
+	line-height:30px;
+	/*color:#fff;*/
+	font-size:28px;
+}
+.table-title span{
+	float:right;
+	margin-left:20px;
+	font-size:20px;
+
+}
+#table-content{
+	width:80%;
+	height:600px;
+	background: #dfe;
+	/*margin:0 auto;*/
+}
+.tHead{
+	padding:0;
+	height:55px;
+	line-height: 55px;
+	border-bottom: 1px solid #9cf;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.n1,.n2,.n3,.n4,.n5,.n6{
+	float:left;
+	height:50px;
+	margin:0;
+    text-align:center; 
+}
+
+/*每个单元格的宽度*/
+/*#############*/
+.n1 {
+  width:10%;
+}
+.n2 {
+  width:30%;
+}
+.n3 {
+  width:20%;
+}
+.n4 {
+  width:20%;
+}
+.n5 {
+  width:10%;
+}
+.n6 {
+  width:10%;
+}
+ul#tRow{
+	width:100%;
+	height:80%;
+	background:#dde;
+}
+li.row{
+	padding:0;
+	height:55px;
+	line-height: 55px;
+	border-bottom: 1px solid #9cf;
+	text-align: left;
+	vertical-align: middle;
+	list-style:none;
+	display:inline;
+
+}
+
+#page{width:80%;margin:0 auto;position: relative;top:10px;left:20%;}
+
+
+
+
+

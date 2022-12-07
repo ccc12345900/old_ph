@@ -1,0 +1,118 @@
+/*登录页面样式*/
+*{
+	margin:0px;
+	padding:0px;
+}
+html{
+	font-family: Tahoma, Geneva, 'Simsun';
+}
+body{
+	background-image: url(../img/001.jpg);
+	background-repeat: no-repeat;
+	background-size: cover;
+	overflow: hidden;
+}
+.login-box{
+	width:500px;
+	margin:200px auto;
+}
+.login-top{
+	height:330px;
+	background-color: #fff;
+	border-radius: 10px;
+}
+.login-top .login-top-title-box{
+	border-bottom:1px solid #eee;
+	padding-top:10px;
+}
+.login-top .login-top-title{
+	height:80px;
+	line-height: 80px;
+	width:400px;
+	margin:0 auto 15px ;
+}
+.login-top .login-top-title .logo{
+	height: 50px;
+	vertical-align: middle;
+	margin-right:34px;
+}
+.login-top .login-top-title .text{
+   display: inline-block;
+   height:80px;
+   font-size: 25px;
+   line-height: 80px;
+   font-family: 'Microsoft Yahei',Tahoma, Geneva, 'Simsun';
+   margin-right:26px;
+   vertical-align: middle;
+}
+.login-top .login-top-title .code{
+	width:50px;
+	height:50px;
+	vertical-align: middle;
+}
+
+.login-bottom{
+	margin:20px 0px;
+}
+.login-bottom p{
+	line-height:20px;
+	text-align: center;
+	font-size: 9pt;
+}
+.login-top .login-top-form{
+	width:400px;
+	margin:20px auto;
+}
+.login-top .login-top-form tr .label-text{
+	width:100px;
+	text-align: center;
+	font-size:9pt;
+	font-family: Tahoma, Geneva, 'Simsun';
+	font-weight: bold;
+}
+.login-top .login-top-form tr .ipt{
+	padding:3px 0px;
+}
+.login-top .login-top-form tr .ipt input,
+.login-top .login-top-form tr .ipt select{
+	width:255px;
+	background-color: #fff;
+    border: 1px solid #ccc;
+    height: 18px;
+    padding: 4px 6px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #555;
+    vertical-align: middle;
+    border-radius: 4px;
+}
+.login-top .login-top-form tr .ipt .ipt-select{
+	width:100px;
+	height:28px;
+}
+.login-top .login-top-form tr .ipt .code{
+	width:80px;
+}
+.login-top .login-top-form tr .ipt .checkcode-img{
+	vertical-align: middle;
+	cursor:pointer;
+}
+.login-top .login-top-form tr .btn-group{
+	padding-top:10px;
+}
+.login-top .login-top-form tr .btn-group .btn{
+	 border-radius: 4px;
+	 padding:5px 52px;
+	 border:1px solid #ccc;
+	 cursor:pointer;
+}
+.login-top .login-top-form tr .btn-group .submit{
+	color:#fff;
+	background-color: #006DCC;
+    background-image: linear-gradient(to bottom, #0088CC, #0044CC);
+}
+.login-top .login-top-form tr .btn-group .reg{
+	color:#333;
+	background-color: #F5F5F5;
+    background-image: linear-gradient(to bottom, #FFFFFF, #E6E6E6);
+}

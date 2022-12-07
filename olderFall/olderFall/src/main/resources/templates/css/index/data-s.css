@@ -1,0 +1,35 @@
+#data div
+{
+    /*padding: 20px;*/
+float: left;
+}
+#data #chart1
+{
+    width: 80%;
+    height: 420px;
+    display: inline-block;
+    margin-top: 50px;
+    text-align: center;
+}
+#data #chart2
+{
+    width: 80%;
+    height: 350px;
+    display: inline-block;
+    margin-top: 50px;
+    text-align: center;
+}
+#a1{
+    float: left;
+}
+#a2{
+    float: left;
+}
+#a3{
+    float: left;
+}
+#data .blank
+{
+    width: 50px;
+    display: inline-block;
+}
