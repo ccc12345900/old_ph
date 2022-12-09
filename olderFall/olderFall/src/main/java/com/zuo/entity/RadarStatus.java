@@ -1,8 +1,9 @@
 package com.zuo.entity;
 
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -10,7 +11,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author admin
- * @since 2022-12-05
+ * @since 2022-12-08
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -21,6 +22,8 @@ public class RadarStatus implements Serializable {
     private Integer id;
 
     private Integer status;
+
+    private String nettyCode;
 
 
 }

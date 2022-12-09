@@ -258,7 +258,7 @@
         })
 
         $.ajax({
-            url:"/oldPh/getMessage",
+            url:"/radarStatus/getradarStatus",
             type: "post",
             dataType:"json",
             contentType:"application/json"
@@ -268,19 +268,19 @@
 
         })
 
-        $.ajax({
-            url:"/oldFamily/untieFamily",
-            type: "post",
-            dataType:"json",
-            contentType:"application/json",
-            data:JSON.stringify({
-                "fphone":"120",
-                "name":"救护车"
-            })
-            ,success(resp){
-               console.log(resp)
-            }
-    })
+    //     $.ajax({
+    //         url:"/oldFamily/untieFamily",
+    //         type: "post",
+    //         dataType:"json",
+    //         contentType:"application/json",
+    //         data:JSON.stringify({
+    //             "fphone":"120",
+    //             "name":"救护车"
+    //         })
+    //         ,success(resp){
+    //            console.log(resp)
+    //         }
+    // })
     }
 
 </script>

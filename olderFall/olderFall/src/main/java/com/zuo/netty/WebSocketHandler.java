@@ -40,8 +40,10 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
             msg = textWebSocketFrame.text();
         }else {
             msg = String.valueOf(object);
+            System.out.println("发送信息的管道"+ctx.channel().id().asLongText());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("msg",msg);
+            jsonObject.put("netty_code",ctx.channel().id().asLongText());
             rabbitTemplate.convertAndSend("work-queue",jsonObject.toJSONString());
         }
         System.out.println("msg:"+msg);
@@ -74,7 +76,11 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         System.out.println("handlerRemoved::"+ctx.channel().id().asLongText());
         String clientId = ctx.channel().id().toString();
-
+        String msg = "{" + "status:0" + "}";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msg",msg);
+        jsonObject.put("netty_code",ctx.channel().id().asLongText());
+        rabbitTemplate.convertAndSend("work-queue",jsonObject.toJSONString());
         map.remove(clientId);
     }
 

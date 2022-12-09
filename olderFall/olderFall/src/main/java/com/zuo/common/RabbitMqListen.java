@@ -1,6 +1,7 @@
 package com.zuo.common;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zuo.entity.OldPh;
 import com.zuo.entity.RadarData;
 import com.zuo.entity.RadarStatus;
@@ -40,8 +41,10 @@ public class RabbitMqListen {
     public void workQueue(String str) {
         System.out.println("当前监听到了：" + str);
         JSONObject jsonObject = JSONObject.parseObject(str);
+        String netty_code = jsonObject.getString("netty_code");
         jsonObject = jsonObject.getJSONObject("msg");
         Integer type = jsonObject.getInteger("type");
+        if(type == null)type = 0;
         Integer status = jsonObject.getInteger("status");
         if(status != null)
         {
@@ -50,19 +53,45 @@ public class RabbitMqListen {
                 System.out.println("雷达状态信息");
                 RadarStatus radarStatus = new RadarStatus();
                 Integer id = jsonObject.getInteger("id");
+                if(id!=null){
                 radarStatus.setId(id);
                 radarStatus.setStatus(status);
-                radarStatusService.updateById(radarStatus);
-            }else{
+                radarStatus.setNettyCode(netty_code);
+                radarStatusService.updateById(radarStatus);}
+            }else if(type == 2){
                 System.out.println("手表状态信息");
                 WatchStatus watchStatus = new WatchStatus();
                 Integer id = jsonObject.getInteger("id");
                 watchStatus.setId(id);
                 watchStatus.setStatus(status);
+                watchStatus.setNettyCode(netty_code);
                 watchStatusService.updateById(watchStatus);
             }
+            else{
+                QueryWrapper<RadarStatus> queryWrapper = new QueryWrapper<>();
+                QueryWrapper<WatchStatus> queryWrapper1 = new QueryWrapper<>();
+                queryWrapper.eq("netty_code",netty_code);
+                queryWrapper1.eq("netty_code",netty_code);
+                RadarStatus radarStatus1 = radarStatusService.getOne(queryWrapper);
+                WatchStatus watchStatus = watchStatusService.getOne(queryWrapper1);
+                if(radarStatus1 != null)
+                {
+                    radarStatus1.setStatus(0);
+                    radarStatus1.setNettyCode("暂无链接");
+                    radarStatusService.updateById(radarStatus1);
+                }
+                else if(watchStatus!=null)
+                {
+                    watchStatus.setStatus(0);
+                    watchStatus.setNettyCode("暂无链接");
+                    watchStatusService.updateById(watchStatus);
+                }else {
+                    System.out.println("未查询到连接信息");
+                }
+
+            }
         }
-        else {
+        else if(type != null){
             if (type == 1) {
                 System.out.println("雷达数据");
                 Integer id = jsonObject.getInteger("id");
@@ -91,9 +120,12 @@ public class RabbitMqListen {
                 oldPhService.save(oldPh);
             }
         }
+        else {
+            System.out.println("接收到了其他数据");
+        }
     }
 }
-//{"id":1,"type":1,"dis":100,"angle":50}
+// {"id":1,"type":1,"dis":100,"angle":50}
 // {"id":1,"type":2,"heart":100,"blood":50,"template":36,"fall":0}
 // {"id":1,"type":1,"status":1}
-
+// {"content":"hello"}

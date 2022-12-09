@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author admin
- * @since 2022-12-05
+ * @since 2022-12-08
  */
 public interface RadarStatusMapper extends BaseMapper<RadarStatus> {
 

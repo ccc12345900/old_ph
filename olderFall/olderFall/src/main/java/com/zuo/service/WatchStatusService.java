@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author admin
- * @since 2022-12-05
+ * @since 2022-12-08
  */
 public interface WatchStatusService extends IService<WatchStatus> {
 

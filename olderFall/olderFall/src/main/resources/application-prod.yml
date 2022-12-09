@@ -3,6 +3,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: zuo
     password: 1234
-    url: jdbc:mysql://47.97.208.219:3306/ph_old?serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://47.97.208.219:3306/ph_old?serverTimezone=Asia/Shanghai&useSSL=false&zeroDateTimeBehavior=convertToNull
+  rabbitmq:
+    host: 47.97.208.219
+    port: 5673
+    username: guest
+    password: guest
+    virtual-host: /
 server:
   port: 8087
