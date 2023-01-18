@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/common.css" />
+		<link rel="stylesheet" href="../plugins/font-awesome-4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="../css/managerList.css" />
+		<script type="text/javascript" src="../js/index.js" ></script>
+	</head>
+	<body>
+		<div class="toolbar">
+			<a href="addManager.html" class="btn btn-primary"><i class="fa fa-plus"></i> 新增</a>
+			<a href="javascript:;" class="btn btn-primary"><i class="fa fa-edit"></i> 修改</a>
+			<a href="javascript:;" class="btn btn-primary"><i class="fa fa-trash"></i> 删除</a>
+			<form class="search-form" action="">
+				<input class="ipt-text" type="text" name="username" />
+				<input class="btn btn-default" type="submit" value="搜索" />
+			</form>
+		</div>
+		<div class="table-box">
+			<div class="table-list">
+				<table class="content-list-table">
+					<tr>
+						<th></th>
+						<th><input class="table-check-all" type="checkbox" name="all"/></th>
+						<th>用户id</th>
+						<th>用户名</th>
+						<th>所属部门</th>
+						<th>邮箱</th>
+						<th>手机号</th>
+						<th>状态</th>
+						<th>创建时间</th>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td><input class="table-check-item" type="checkbox" name="userId"/></td>
+						<td>56</td>
+						<td>张三</td>
+						<td>项目部</td>
+						<td>1584645642@163.com</td>
+						<td>1588888888</td>
+						<td>正常</td>
+						<td>2017-8-1 15:34:38</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td><input class="table-check-item" type="checkbox" name="userId"/></td>
+						<td>56</td>
+						<td>张三</td>
+						<td>项目部</td>
+						<td>1584645642@163.com</td>
+						<td>1588888888</td>
+						<td>正常</td>
+						<td>2017-8-1 15:34:38</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td><input  class="table-check-item" type="checkbox" name="userId"/></td>
+						<td>56</td>
+						<td>张三</td>
+						<td>项目部</td>
+						<td>1584645642@163.com</td>
+						<td>1588888888</td>
+						<td>正常</td>
+						<td>2017-8-1 15:34:38</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td><input  class="table-check-item" type="checkbox" name="userId"/></td>
+						<td>56</td>
+						<td>张三</td>
+						<td>项目部</td>
+						<td>1584645642@163.com</td>
+						<td>1588888888</td>
+						<td>正常</td>
+						<td>2017-8-1 15:34:38</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td><input class="table-check-item" type="checkbox" name="userId"/></td>
+						<td>56</td>
+						<td>张三</td>
+						<td>项目部</td>
+						<td>1584645642@163.com</td>
+						<td>1588888888</td>
+						<td>正常</td>
+						<td>2017-8-1 15:34:38</td>
+					</tr>
+				</table>
+			</div>
+			<div class="content-pager">
+				<table class="content-pager-table">
+					<tr>
+						<td></td>
+						<td>
+							<div class="pagaration">
+								<a href="#"><i class="fa fa-step-backward"></i></a>
+								<a href="#"><i class="fa fa-backward"></i></a>
+								<span class="line">|</span>
+								<input type="text"name="num" />
+								 共<span>1</span>页
+								<span class="line">|</span>
+								<a href="#"><i class="fa fa-forward"></i></a>
+								<a href="#"><i class="fa fa-step-forward"></i></a>
+								<select name="pageSize">
+									<option value="10">10</option>
+									<option value="10">20</option>
+									<option value="10">30</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							共<span>30</span>条,当前1/3页
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<script>
+			//初始化tablebox高度
+			bdyc.setTableBoxHeight();
+			bdyc.tableCheckAll();
+			bdyc.tableTrClick();
+			bdyc.tableTrCheckboxClick();
+		</script>
+	</body>
+</html>
