@@ -96,15 +96,15 @@ public class RabbitMqListen {
                 //获取距离和角度(循环访问存储) 这里接收数据需要完善
                 ArrayList<FamilyData> familyList = new ArrayList<>();
 
-                Double dis = r_data.getDouble("dis");
-                String angle = r_data.getString("angle");
-                Integer id = jsonObject.getInteger("id");
-
                 for(int i = 0;i <= 360;i++) {
+                    Double dis = r_data.getDouble("dis" + i);
+                    String angle = r_data.getString("angle" + i);
+                    Integer id = jsonObject.getInteger("id");
+                    //存储数据
                     FamilyData familyData = new FamilyData();
                     familyData.setRDist(dis);
                     familyData.setId(id);
-                    familyData.setAngle(String.valueOf(i));
+                    familyData.setAngle(String.valueOf(angle));
                     familyList.add(familyData);
                 }
                 familyDataService.updateFamily(familyList);
@@ -115,16 +115,19 @@ public class RabbitMqListen {
                     //获取距离和角度(循环访问存储) 这里接受数据需要完善
                     ArrayList<FamilyData> familyList = new ArrayList<>();
 
-                    Double dis = r_data.getDouble("dis");
-                    String angle = r_data.getString("angle");
-                    Integer id = jsonObject.getInteger("id");
-                    //存储数据
-                    RadarData radarData = new RadarData();
-                    radarData.setId(id);
-                    radarData.setRDist(dis);
-                    radarData.setAngle(angle);
-                    radarData.setTime(LocalDateTime.now());
-                    radarDataService.save(radarData);
+                    for(int i = 0;i <= 68;i++) {
+                        Double dis = r_data.getDouble("dist" + i);
+                        String angle = r_data.getString("angle" + i);
+                        Integer id = jsonObject.getInteger("id");
+                        //存储数据
+                        RadarData radarData = new RadarData();
+                        radarData.setId(id);
+                        radarData.setRDist(dis);
+                        radarData.setAngle(angle);
+                        radarData.setTime(LocalDateTime.now());
+                        radarDataService.save(radarData);
+                    }
+
                 }
                 else {
                     System.out.println("手表数据");
