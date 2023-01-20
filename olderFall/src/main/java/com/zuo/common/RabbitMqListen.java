@@ -97,7 +97,7 @@ public class RabbitMqListen {
                 ArrayList<FamilyData> familyList = new ArrayList<>();
 
                 for(int i = 0;i <= 360;i++) {
-                    Double dis = r_data.getDouble("dis" + i);
+                    Double dis = r_data.getDouble("dist" + i);
                     String angle = r_data.getString("angle" + i);
                     Integer id = jsonObject.getInteger("id");
                     //存储数据
@@ -115,7 +115,7 @@ public class RabbitMqListen {
                     //获取距离和角度(循环访问存储) 这里接受数据需要完善
                     ArrayList<FamilyData> familyList = new ArrayList<>();
 
-                    for(int i = 0;i <= 68;i++) {
+                    for(int i = 0;i <= 16;i++) {
                         Double dis = r_data.getDouble("dist" + i);
                         String angle = r_data.getString("angle" + i);
                         Integer id = jsonObject.getInteger("id");

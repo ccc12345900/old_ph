@@ -85,14 +85,11 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
             rabbitTemplate.convertAndSend("work-queue",jsonObject.toJSONString());
             //进行数据判断
 
-            /*
             JSONObject data_obj = JSONObject.parseObject(jsonObject.toJSONString());
             data_obj = data_obj.getJSONObject("msg");
             Integer update = data_obj.getInteger("update");
             Integer id = data_obj.getInteger("id");
-            JSONObject r_data = jsonObject.getJSONObject("r_data");
-             */
-            /*
+            JSONObject r_data = data_obj.getJSONObject("r_data");
             if(update == null && r_data!=null)
             {
                 //这里需要完善
@@ -100,33 +97,44 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 List<FamilyData> familyDataById = familyDataService.getFamilyDataById(id);
                 //对比
                 List<FamilyData> familyData = new ArrayList<>();//存储对比之后的数据
-                for(int i = 0;i <= 360;i++)//获取r_data发送过来的数据
+                for(int i = 0;i <= 16;i++)//获取r_data发送过来的数据
                 {
-                    Double dis = r_data.getDouble("dis" + i);
+                    Double dis = r_data.getDouble("dist" + i);
                     String angle = r_data.getString("angle" + i);
+                    boolean flag = false;
                     for(FamilyData t : familyDataById)//获取数据库中的数据
                     {
-                        if(t.getAngle().equals(angle) && Math.abs(dis - t.getRDist()) >= 1)//对比之后距离变化说明不是同一个点
+                        //门口数据没保存，所以会被分开
+                        if(t.getAngle().equals(angle)) flag = true;
+                        if(flag && Math.abs(dis - t.getRDist()) >= 1)//对比之后距离变化说明不是同一个点
                         {
                             FamilyData familyData1 = new FamilyData();
                             familyData1.setId(id);
                             familyData1.setAngle(angle);
                             familyData1.setRDist(dis);
                             familyData.add(familyData1);//存储发现不同的数据
+                            break;
                         }
+                    }
+                    if(!flag)
+                    {
+                        FamilyData familyData1 = new FamilyData();
+                        familyData1.setId(id);
+                        familyData1.setAngle(angle);
+                        familyData1.setRDist(dis);
+                        familyData.add(familyData1);//存储发现不同的数据
                     }
                 }
                 //个体归类
                 //先排序，将检测到的所有点按角度进行升序排序
-                quick_sort(familyData,0,familyData.size());
+                quick_sort(familyData,0,familyData.size() - 1);
                 //每个点逐个扫描，进行族类划分
                 List<List<FamilyData>> family_class = new ArrayList<>();
                 List<FamilyData> t = new ArrayList<>();
-                for(int i = 0;i < familyData.size();)
+                for(int i = 0, j = i + 1;i < familyData.size();)
                 {
                     t.add(familyData.get(i));
-                    for(int j = i + 1;j < familyData.size();j++)
-                    {
+                    if(i != familyData.size() - 1) {
                         //获取点之间的信息
                         String angle_s_j = familyData.get(j).getAngle();
                         Double angle_d_j = Double.valueOf(angle_s_j);
@@ -135,15 +143,21 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                         Double angle_d_i = Double.valueOf(angle_s_i);
                         Double rDist_i = familyData.get(i).getRDist();
                         //判断是否为同一族类
-                        if(Math.abs(angle_d_j - angle_d_i) < 2 && Math.abs(rDist_j- rDist_i) < 3)i = j;
-                        else{
+                        if (Math.abs(angle_d_j - angle_d_i) < 2 && Math.abs(rDist_j - rDist_i) < 3) {
+                            i = j;
+                            j++;
+                        } else {
                             family_class.add(t);//添加该族类
                             t = new ArrayList<>();//清空上一个族类
                             i = j;
+                            j++;
                         }
+                    }else{
+                        family_class.add(t);
+                        break;
                     }
                 }
-
+                System.out.println(family_class.size());
                 //添加点云数据
                 cloudDataService.updateCloudData(family_class);
 
@@ -153,51 +167,76 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 String y1 = doorById.getY1();
                 String x2 = doorById.getX2();
                 String y2 = doorById.getY2();
-                Double x_m = (Double.valueOf(x1) - Double.valueOf(x2))/2;
-                Double y_m = (Double.valueOf(y1) - Double.valueOf(y2))/2;
+                Double x_m = (Double.valueOf(x1) + Double.valueOf(x2))/2;
+                Double y_m = (Double.valueOf(y1) + Double.valueOf(y2))/2;
                 Double r = Double.valueOf(doorById.getR());
 
                 int indoorNum = 0,outdoorNum = 0,cloud_num = family_class.size();//增加和减少人数以及点云数量
                 for(List<FamilyData> fa: family_class)
                 {
+                    System.out.println(fa.size());
                     Double x1_f = fa.get(0).getRDist() * Math.sin(Double.valueOf(fa.get(0).getAngle())* (Math.PI / 180));
                     Double y1_f = fa.get(0).getRDist() * Math.cos(Double.valueOf(fa.get(0).getAngle())* (Math.PI / 180));
-                    Double y2_f = fa.get(fa.size()).getRDist() * Math.cos(Double.valueOf(fa.get(fa.size()).getAngle())* (Math.PI / 180));
-                    Double x2_f = fa.get(fa.size()).getRDist() * Math.sin(Double.valueOf(fa.get(fa.size()).getAngle())* (Math.PI / 180));
-                    Double x1_f_m = (x1_f - x2_f)/2;
-                    Double y1_f_m = (y1_f - y2_f)/2;
+                    Double y2_f = fa.get(fa.size() - 1).getRDist() * Math.cos(Double.valueOf(fa.get(fa.size() - 1).getAngle())* (Math.PI / 180));
+                    Double x2_f = fa.get(fa.size() - 1).getRDist() * Math.sin(Double.valueOf(fa.get(fa.size() - 1).getAngle())* (Math.PI / 180));
+                    Double x1_f_m = (x1_f + x2_f)/2;//人体中心点坐标
+                    Double y1_f_m = (y1_f + y2_f)/2;//人体中心点坐标
                     //计算与门之间的距离,判断是否需要增加人数
                     Double r_m = Math.sqrt(Math.pow((x1_f_m-x_m),2) + Math.pow((y1_f_m-y_m),2));
-                    if(r_m <= r/2)
+                    Double y1_f_m_k = Double.valueOf(doorById.getK()) * x1_f_m + Double.valueOf(doorById.getB());
+                    if(r_m <= r/2 && y1_f_m < y1_f_m_k || y1_f_m > y1_f_m_k)
                     {
                         //减少人数
                         outdoorNum++;
-                    }else if(r_m > r/2 && r_m <= 4 * r/5)
+                    }else if(r_m > r/2 && r_m <= 4 * r/5 && y1_f_m < y1_f_m_k)
                     {
                         //增加人数
                         indoorNum++;
                     }
                 }
-                //更改屋内人数
-                if(outdoorNum != 0 || indoorNum != 0) {
-                    int sl_num = cloud_num - outdoorNum + indoorNum;
-                    PeopleNum byId = peopleNumService.getById(id);
-                    Integer peopleNum = byId.getPeopleNum();
-                    if(peopleNum!=sl_num)
+                boolean fall = false;
+                //判断是否跌倒
+                PeopleNum byId = peopleNumService.getById(id);
+                Integer peopleNum1 = byId.getPeopleNum();//数据库存储的屋内人数
+                if(byId == null)//如果是第一次存储数据,直接存储检测到的屋内人数
+                {
+                    PeopleNum peopleNum = new PeopleNum();
+                    peopleNum.setId(id);
+                    peopleNum.setPeopleNum(cloud_num - outdoorNum);
+                    peopleNumService.save(peopleNum);
+                }else{
+                    if(peopleNum1 != cloud_num - outdoorNum)//如果屋内应该存在的人数等于检测到的人数，说明正常
                     {
-                        byId.setPeopleNum(sl_num);
-                        peopleNumService.updateById(byId);
+                         if(peopleNum1 < cloud_num - outdoorNum)//要么故障，要么有人进入
+                        {
+                            if(peopleNum1 + indoorNum == cloud_num - outdoorNum)//说明有人进入
+                            {
+                                PeopleNum peopleNum = new PeopleNum();
+                                peopleNum.setId(id);
+                                peopleNum.setPeopleNum(cloud_num - outdoorNum);
+                                peopleNumService.updateById(peopleNum);
+                            }else {//暂停使用,等待重置
+
+                            }
+                        }else if(peopleNum1 > cloud_num - outdoorNum)//要么有人出门，要么有人跌倒
+                        {
+                            if(peopleNum1 == cloud_num)//但是如果相等，说明有人出去了
+                            {
+                                PeopleNum peopleNum = new PeopleNum();
+                                peopleNum.setId(id);
+                                peopleNum.setPeopleNum(cloud_num - outdoorNum);
+                                peopleNumService.updateById(peopleNum);
+                            }else {//说明发生跌倒，立刻报警,并等待重置
+                                fall = true;
+                            }
+                        }
                     }
                 }
-                //判断是否发生跌倒情况
-                PeopleNum byId = peopleNumService.getById(id);
-                //如果数据库记录的数量和扫描到的点云数量不一致，则认为发生跌倒
-                if(byId.getPeopleNum() != cloud_num)
-                    msg = "发生跌倒";
-                else
-                    msg = "未检测到跌倒";
+
+                if(fall)
+                    msg = "检测到跌倒";
+                else msg = "未检测到跌倒";
             }
-             */
         }
         System.out.println("msg:"+msg);
 
