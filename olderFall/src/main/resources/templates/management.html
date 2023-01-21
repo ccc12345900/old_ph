@@ -9,46 +9,46 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <script th:src="@{/js/echarts.js}"></script>
 </head>
-<script>
-    var webSocket;
-    if (window.WebSocket) {
-        webSocket = new WebSocket("ws://localhost:10050/ws");
-        //webSocket = new WebSocket("ws://47.97.208.219:10050/ws");
+<!--<script>-->
+<!--    var webSocket;-->
+<!--    if (window.WebSocket) {-->
+<!--        webSocket = new WebSocket("ws://localhost:10050/ws");-->
+<!--        //webSocket = new WebSocket("ws://47.97.208.219:10050/ws");-->
 
-        webSocket.onmessage = function (ev) {
-            console.log("=====");
-            var res = document.getElementById("response");
-            res.value = res.value + "\n" + ev.data;
-        }
+<!--        webSocket.onmessage = function (ev) {-->
+<!--            console.log("=====");-->
+<!--            var res = document.getElementById("response");-->
+<!--            res.value = res.value + "\n" + ev.data;-->
+<!--        }-->
 
-        webSocket.onopen = function (ev) {
-            var req = document.getElementById("response");
-            req.value = "链接开启...."+"\n";
-        }
+<!--        webSocket.onopen = function (ev) {-->
+<!--            var req = document.getElementById("response");-->
+<!--            req.value = "链接开启...."+"\n";-->
+<!--        }-->
 
-        webSocket.onclose = function (ev) {
-            var req = document.getElementById("response");
-            req.value += "链接关闭...."+"\n";
-        }
+<!--        webSocket.onclose = function (ev) {-->
+<!--            var req = document.getElementById("response");-->
+<!--            req.value += "链接关闭...."+"\n";-->
+<!--        }-->
 
-        function sendMessage(msg) {
-            //alert("send?");
-            if (!window.WebSocket){
-                return;
-            }
-            if (webSocket.readyState === WebSocket.OPEN) {
-                //alert("send!");
-                webSocket.send(msg);
-                document.getElementById("requestComment").value='';
-            }else {
-                alert("链接未开启！");
-            }
-        }
+<!--        function sendMessage(msg) {-->
+<!--            //alert("send?");-->
+<!--            if (!window.WebSocket){-->
+<!--                return;-->
+<!--            }-->
+<!--            if (webSocket.readyState === WebSocket.OPEN) {-->
+<!--                //alert("send!");-->
+<!--                webSocket.send(msg);-->
+<!--                document.getElementById("requestComment").value='';-->
+<!--            }else {-->
+<!--                alert("链接未开启！");-->
+<!--            }-->
+<!--        }-->
 
-    } else {
-        alert("浏览器不支持websocket")
-    }
-</script>
+<!--    } else {-->
+<!--        alert("浏览器不支持websocket")-->
+<!--    }-->
+<!--</script>-->
 <body>
 <div>
     <div id="main" style="width: 600px;height:400px;" ></div>
@@ -68,6 +68,10 @@
 <!--semantic ui的js样式-->
 <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 <script type="text/javascript">
+    var webSocket;
+    var f_data = 0
+    var all_data = []
+
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
     var myChart1 = echarts.init(document.getElementById('chart3'));
@@ -244,17 +248,37 @@
     myChart1.setOption(option2)
     myChart2.setOption(option3)
 
-    var f_data = 0
+    //获取人体点云数据
+    $.ajax({
+        url:"/cloudData/getcloudData",
+        type: "get",
+        dataType:"json",
+        contentType:"application/json"
+        ,success(resp){
+            f_data = resp.data
+            for(i = 0; i < f_data.length;i++)
+            {
+                var a = []
+                var angle = f_data[i].angle
+                var dist = f_data[i].dist
+                a.push(Math.sin(angle* (Math.PI / 180))*dist)
+                a.push(Math.cos(angle* (Math.PI / 180))*dist)
+                all_data.push(a)
+            }
+            console.log(all_data)
+        }
 
+    })
+
+    //获取家庭地形数据
     $.ajax({
         url:"/familyData/getFamily",
         type: "get",
         dataType:"json",
         contentType:"application/json"
         ,success(resp){
-            console.log(resp.data)
             f_data = resp.data
-            var all_data = []
+
             for(i = 0; i < f_data.length;i++)
             {
                 var a = []
@@ -282,7 +306,100 @@
             myChart.setOption(option1);
         }
     })
+    if (window.WebSocket) {
+        webSocket = new WebSocket("ws://localhost:10050/ws");
+        //webSocket = new WebSocket("ws://47.97.208.219:10050/ws");
 
+        webSocket.onmessage = function (ev) {
+            //实时更新人体点云
+            console.log("=====");
+            var res = document.getElementById("response");
+            res.value = res.value + "\n" + ev.data;
+            all_data = []
+            $.ajax({
+                url:"/cloudData/getcloudData",
+                type: "get",
+                dataType:"json",
+                contentType:"application/json"
+                ,success(resp){
+                    f_data = resp.data
+                    for(i = 0; i < f_data.length;i++)
+                    {
+                        var a = []
+                        var angle = f_data[i].angle
+                        var dist = f_data[i].dist
+                        a.push(Math.sin(angle* (Math.PI / 180))*dist)
+                        a.push(Math.cos(angle* (Math.PI / 180))*dist)
+                        all_data.push(a)
+                    }
+                    console.log(all_data)
+                }
+
+            })
+            $.ajax({
+                url:"/familyData/getFamily",
+                type: "get",
+                dataType:"json",
+                contentType:"application/json"
+                ,success(resp){
+                    f_data = resp.data
+
+                    for(i = 0; i < f_data.length;i++)
+                    {
+                        var a = []
+                        var angle = f_data[i].angle
+                        var dist = f_data[i].rdist
+                        a.push(Math.sin(angle* (Math.PI / 180))*dist)
+                        a.push(Math.cos(angle* (Math.PI / 180))*dist)
+                        all_data.push(a)
+                    }
+                    console.log(all_data)
+                    option1 = {
+                        title: {
+                            text: '雷达散点图'
+                        },
+                        xAxis: {},
+                        yAxis: {},
+                        series: [
+                            {
+                                symbolSize: 20,
+                                data: all_data,
+                                type: 'scatter'
+                            }
+                        ]
+                    };
+                    myChart.setOption(option1);
+                }
+            })
+        }
+
+        webSocket.onopen = function (ev) {
+            var req = document.getElementById("response");
+            req.value = "链接开启...."+"\n";
+        }
+
+        webSocket.onclose = function (ev) {
+            var req = document.getElementById("response");
+            req.value += "链接关闭...."+"\n";
+        }
+
+        function sendMessage(msg) {
+            //alert("send?");
+            if (!window.WebSocket){
+                return;
+            }
+            if (webSocket.readyState === WebSocket.OPEN) {
+                //alert("send!");
+                webSocket.send(msg);
+                document.getElementById("requestComment").value='';
+            }else {
+                alert("链接未开启！");
+            }
+        }
+
+    } else {
+        alert("浏览器不支持websocket")
+    }
 </script>
 <script>
     window.onload = function (){

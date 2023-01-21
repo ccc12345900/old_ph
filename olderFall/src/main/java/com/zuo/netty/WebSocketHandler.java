@@ -97,10 +97,11 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 List<FamilyData> familyDataById = familyDataService.getFamilyDataById(id);
                 //对比
                 List<FamilyData> familyData = new ArrayList<>();//存储对比之后的数据
-                for(int i = 0;i <= 16;i++)//获取r_data发送过来的数据
+                for(int i = 0;i <= 81;i++)//获取r_data发送过来的数据
                 {
                     Double dis = r_data.getDouble("dist" + i);
                     String angle = r_data.getString("angle" + i);
+                    if(dis == null && angle == null)break;
                     boolean flag = false;
                     for(FamilyData t : familyDataById)//获取数据库中的数据
                     {
