@@ -34,6 +34,9 @@ public class RabbitMqListen {
     @Autowired
     private WatchStatusService watchStatusService;//手表状态
 
+    @Autowired
+    private OldPhDataService oldPhDataService;//计算身体健康
+
     @RabbitListener(queues = "work-queue")
     @RabbitHandler
     public void workQueue(String str) {
@@ -131,20 +134,40 @@ public class RabbitMqListen {
 
                 }
                 else {
-                    System.out.println("手表数据");
-                    OldPh oldPh = new OldPh();
-                    Integer id = jsonObject.getInteger("id");
-                    String heart = jsonObject.getString("heart");
-                    String blood = jsonObject.getString("blood");
-                    String template = jsonObject.getString("template");
-                    Integer fall = jsonObject.getInteger("fall");
-                    oldPh.setId(id);
-                    oldPh.setHeartRate(heart);
-                    oldPh.setBloodPressure(blood);
-                    oldPh.setTemperature(template);
-                    oldPh.setFall(fall);
-                    oldPh.setTime(LocalDateTime.now());
-                    oldPhService.save(oldPh);
+                    JSONObject o_data = jsonObject.getJSONObject("o_data");
+                    if(o_data!=null)
+                    {
+                        //先清除原先数据
+                        Integer id = jsonObject.getInteger("id");
+                        oldPhDataService.removeById(id);
+                        ArrayList<OldPhData> familyList = new ArrayList<>();
+                        for(int i = 0;i <= 81;i++) {
+                            String dis = o_data.getString("heart" + i);//heart
+                            String angle = o_data.getString("template" + i);//temp
+                            if(dis == null && angle == null)break;
+                            //存储数据
+                            OldPhData oldPhData = new OldPhData();
+                            oldPhData.setId(id);
+                            oldPhData.setHeartRate(dis);
+                            oldPhData.setTemp(angle);
+                            oldPhDataService.save(oldPhData);
+                        }
+                    }else {
+                        System.out.println("手表数据");
+                        OldPh oldPh = new OldPh();
+                        Integer id = jsonObject.getInteger("id");
+                        String heart = jsonObject.getString("heart");
+                        String blood = jsonObject.getString("blood");
+                        String template = jsonObject.getString("template");
+                        Integer fall = jsonObject.getInteger("fall");
+                        oldPh.setId(id);
+                        oldPh.setHeartRate(heart);
+                        oldPh.setBloodPressure(blood);
+                        oldPh.setTemperature(template);
+                        oldPh.setFall(fall);
+                        oldPh.setTime(LocalDateTime.now());
+                        oldPhService.save(oldPh);
+                    }
                 }
             }
         }

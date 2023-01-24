@@ -6,10 +6,7 @@ import com.zuo.common.R;
 import com.zuo.entity.DoorData;
 import com.zuo.entity.FamilyData;
 import com.zuo.entity.PeopleNum;
-import com.zuo.service.CloudDataService;
-import com.zuo.service.DoorDataService;
-import com.zuo.service.FamilyDataService;
-import com.zuo.service.PeopleNumService;
+import com.zuo.service.*;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,12 +41,19 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
     private static PeopleNumService peopleNumService;
 
     private static CloudDataService cloudDataService;
+
+    private static OldPhDataService oldPhDataService;
     private static Map<String, Channel> map = new ConcurrentHashMap<>();
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public void setRabbitTemplate(RabbitTemplate rabbitTemplate){
         WebSocketHandler.rabbitTemplate = rabbitTemplate;
+    }
+
+    @Autowired
+    public void setOldPhDataService(OldPhDataService oldPhDataService){
+        WebSocketHandler.oldPhDataService = oldPhDataService;
     }
 
     @Autowired
@@ -237,6 +241,12 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 if(fall)
                     msg = "检测到跌倒";
                 else msg = "未检测到跌倒";
+            }
+            else {
+                String heart = data_obj.getString("heart");
+                String template = data_obj.getString("template");
+                R res = oldPhDataService.computeData(id, heart, template);
+                msg = res.getMessage();
             }
         }
         System.out.println("msg:"+msg);
