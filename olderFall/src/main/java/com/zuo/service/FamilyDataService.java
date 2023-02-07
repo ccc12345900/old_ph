@@ -20,4 +20,6 @@ public interface FamilyDataService extends IService<FamilyData> {
     R getFamilyData(HttpSession session);
 
     List<FamilyData> getFamilyDataById(Integer id);
+
+    R getFamilyDataByOid(Integer id);
 }

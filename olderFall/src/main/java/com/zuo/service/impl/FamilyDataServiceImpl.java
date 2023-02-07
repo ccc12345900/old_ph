@@ -79,4 +79,18 @@ public class FamilyDataServiceImpl extends ServiceImpl<FamilyDataMapper, FamilyD
         List<FamilyData> familyData = familyDataMapper.selectList(familyDataQueryWrapper);
         return familyData;
     }
+
+    @Override
+    public R getFamilyDataByOid(Integer id) {
+        //根据老人id查询设备id
+        QueryWrapper<OldMachine> familyDataQueryWrapper1 = new QueryWrapper<>();
+        familyDataQueryWrapper1.eq("oid",id);
+        OldMachine oldMachine = oldMachineMapper.selectOne(familyDataQueryWrapper1);
+        Integer mid = oldMachine.getMid();
+        //根据设备id获取家庭地形信息
+        QueryWrapper<FamilyData> familyDataQueryWrapper = new QueryWrapper<>();
+        familyDataQueryWrapper.eq("id",mid);
+        List<FamilyData> familyData = familyDataMapper.selectList(familyDataQueryWrapper);
+        return R.success("查询成功",familyData);
+    }
 }

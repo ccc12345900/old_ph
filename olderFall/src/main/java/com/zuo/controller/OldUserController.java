@@ -33,5 +33,21 @@ public class OldUserController {
     {
         return oldUserService.verityPassword(olderUserRequest,httpSession);
     }
+
+    @PostMapping("/oldList")
+    public R OldNumber(HttpSession session){
+        return oldUserService.OldPeopleNumber(session);
+    }
+
+    @PostMapping("/deleteOldUser")
+    public R deleteOldUser(@RequestBody OlderUserRequest olderUserRequest,HttpSession session){
+        return oldUserService.deleteOldUser(olderUserRequest,session);
+    }
+
+    @PostMapping("/getFamilyList")
+    public R getFamilyList(@RequestBody OlderUserRequest olderUserRequest){
+        return oldUserService.getFamilyList(olderUserRequest.getOid());
+    }
+
 }
 

@@ -17,4 +17,9 @@ import javax.servlet.http.HttpSession;
  */
 public interface OldUserService extends IService<OldUser> {
     R verityPassword(OlderUserRequest olderUserRequest, HttpSession httpSession);
+    R OldPeopleNumber(HttpSession session);
+
+    R deleteOldUser(OlderUserRequest olderUserRequest,HttpSession session);
+
+    R getFamilyList(Integer id);
 }

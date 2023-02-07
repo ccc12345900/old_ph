@@ -51,6 +51,6 @@ public class TestClient {
     }
 
     public static void main(String[] args)throws Exception {
-        new TestClient("127.0.0.1",10050).run();
+        new TestClient("47.97.208.219",10050).run();
     }
 }

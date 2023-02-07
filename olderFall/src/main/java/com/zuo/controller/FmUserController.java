@@ -3,6 +3,7 @@ package com.zuo.controller;
 
 import com.zuo.entity.request.FmUserRequest;
 import com.zuo.common.R;
+import com.zuo.entity.request.OlderUserRequest;
 import com.zuo.service.FmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,5 +34,19 @@ public class FmUserController {
         return fmUserService.verfyFmUser(fmUserRequest,httpSession);
     }
 
+    @PostMapping("/familyList")
+    public R familyList(HttpSession session){
+        return fmUserService.familyPeopleNum(session);
+    }
+
+    @PostMapping("/deleteFmUser")
+    public R deleteFmUser(@RequestBody FmUserRequest fmUserRequest,HttpSession session){
+        return fmUserService.deleteFmUser(fmUserRequest,session);
+    }
+
+    @PostMapping("/getOldList")
+    public R getOldList(@RequestBody FmUserRequest fmUserRequest){
+        return fmUserService.getOldList(fmUserRequest.getFid());
+    }
 }
 

@@ -307,8 +307,8 @@
         }
     })
     if (window.WebSocket) {
-        webSocket = new WebSocket("ws://localhost:10050/ws");
-        //webSocket = new WebSocket("ws://47.97.208.219:10050/ws");
+        // webSocket = new WebSocket("ws://localhost:10050/ws");
+        webSocket = new WebSocket("ws://47.97.208.219:10050/ws");
 
         webSocket.onmessage = function (ev) {
             //实时更新人体点云

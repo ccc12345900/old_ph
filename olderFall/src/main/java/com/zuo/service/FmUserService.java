@@ -18,4 +18,9 @@ import javax.servlet.http.HttpSession;
 public interface FmUserService extends IService<FmUser> {
     R verfyFmUser(FmUserRequest fmUserRequest, HttpSession httpSession);
 
+    R familyPeopleNum(HttpSession session);
+
+    R deleteFmUser(FmUserRequest fmUserRequest,HttpSession session);
+
+    R getOldList(Integer id);
 }
